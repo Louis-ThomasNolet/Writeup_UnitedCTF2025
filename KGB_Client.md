@@ -109,6 +109,6 @@ Le serveur acceptait alors la connexion et nous donnait le **flag** 🎉.
 ---
 
 
-*writeup généré par ChatGPT*
+*writeup généré avec l'aide de ChatGPT*
 
-*writeup generated with ChatGPT*
+*writeup generated with the help of ChatGPT*
