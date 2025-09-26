@@ -1,4 +1,4 @@
-# KGB Client Patch Challenge – Writeup
+# KGB Secure Authentication – Writeup
 
 ## English
 
