@@ -107,4 +107,5 @@ Le client générait lui-même la vraie séquence à envoyer, et comme on avait 
 Le serveur acceptait alors la connexion et nous donnait le **flag** 🎉.
 
 *writeup généré par ChatGPT*
+
 *writeup generated with ChatGPT*
