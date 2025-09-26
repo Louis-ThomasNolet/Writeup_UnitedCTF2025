@@ -105,3 +105,6 @@ On pouvait entrer n’importe quoi.
 Le client générait lui-même la vraie séquence à envoyer, et comme on avait désactivé la vérification, il l’envoyait directement au serveur.
 
 Le serveur acceptait alors la connexion et nous donnait le **flag** 🎉.
+
+*writeup généré par ChatGPT*
+*writeup generated with ChatGPT*
