@@ -198,5 +198,5 @@ chmod +x client.patch
 ```
 
 ---
-
-If you want I can also produce a single binary patch file (diff) or a restore script. Let me know which format you prefer.
+*Généré avec l'aide de ChatGPT*
+*Generated with the help of ChatGPT
