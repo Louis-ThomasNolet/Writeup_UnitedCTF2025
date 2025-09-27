@@ -60,52 +60,6 @@ All patches are tiny in-place modifications to the ELF. For our binary the relat
 
 **Combined effect:** no blocking read, comparisons succeed (expected vs expected), and the accumulator is built from expected words — client sends correct passphrase.
 
-## Safe workflow (what we executed)
-
-1. Backup the binary:
-
-```bash
-cp client.patch client.patch.bak
-```
-
-2. Inspect bytes (before patch):
-
-```bash
-xxd -g 1 -s 0x1a57 -l 8 client.patch   # confirm call bytes
-xxd -g 1 -s 0x1a80 -l 8 client.patch   # confirm mov rdi,rax
-xxd -g 1 -s 0x1ad0 -l 8 client.patch   # confirm displacement bytes
-```
-
-3. Apply patches (examples using dd/printf on WSL):
-
-```bash
-# Patch A: NOP call at 0x1a57
-printf '\x90\x90\x90\x90\x90' > /tmp/newA.bin
-dd if=/tmp/newA.bin of=client.patch bs=1 seek=$((0x1a57)) conv=notrunc
-
-# Patch B: mov rdi,rax -> mov rdi,rdx at 0x1a80
-printf '\x48\x89\xd7' > /tmp/newB.bin
-dd if=/tmp/newB.bin of=client.patch bs=1 seek=$((0x1a80)) conv=notrunc
-
-# Patch C: change lea displacement at 0x1ad0
-printf '\xb0\xff\xff\xff' > /tmp/newC.bin
-dd if=/tmp/newC.bin of=client.patch bs=1 seek=$((0x1ad0)) conv=notrunc
-```
-
-4. Verify writes:
-
-```bash
-xxd -g 1 -s 0x1a57 -l 8 client.patch
-xxd -g 1 -s 0x1a80 -l 8 client.patch
-xxd -g 1 -s 0x1ad0 -l 8 client.patch
-```
-
-5. Run the patched client:
-
-```bash
-chmod +x client.patch
-./client.patch challenges.unitedctf.ca 32776
-```
 
 If everything is correct the client builds and sends the expected passphrase and the server replies with acceptance (or the flag).
 
@@ -119,12 +73,6 @@ If everything is correct the client builds and sends the expected passphrase and
   * change a register-move to use expected buffer,
   * change a displacement so the append uses expected buffer.
 * Test iteratively and keep backups.
-
-## Caveats & ethics
-
-* Use this only on CTF/owned/test binaries. Patching binaries on systems you do not own is unethical and illegal.
-* Always keep backups (`client.patch.bak`).
-* If the server still rejects the passphrase, the client’s generator may be different from the server’s expectation (unlikely if client uses the same generator; otherwise revert and attempt PRNG approach).
 
 ---
 
@@ -152,50 +100,12 @@ Récupérer la passphrase dynamique demandée par le serveur pour s’authentifi
 
 ## Procédure sûre
 
-(Identique aux commandes en anglais — voir la section **Safe workflow**.)
+
 
 ## Raisonnement
 
 * Réutiliser le code déjà présent (générateur) est plus rapide et plus fiable que de tenter de reconstituer un PRNG et de synchroniser seeds/endianness.
 * Faire des modifications minimes et localisées facilite la vérification et la réversibilité.
-
-## Éthique & précautions
-
-* N’effectuez ces manips que dans des environnements autorisés (CTF / labo).
-* Sauvegardez toujours l’original.
-
----
-
-# Appendix — quick checklist (copy-paste)
-
-```bash
-# Backup
-cp client.patch client.patch.bak
-
-# Inspect locations
-xxd -g 1 -s 0x1a57 -l 8 client.patch   # check call
-xxd -g 1 -s 0x1a80 -l 8 client.patch   # check mov rdi,rax
-xxd -g 1 -s 0x1ad0 -l 8 client.patch   # check displacement
-
-# Apply patches
-printf '\x90\x90\x90\x90\x90' > /tmp/newA.bin
-dd if=/tmp/newA.bin of=client.patch bs=1 seek=$((0x1a57)) conv=notrunc
-
-printf '\x48\x89\xd7' > /tmp/newB.bin
-dd if=/tmp/newB.bin of=client.patch bs=1 seek=$((0x1a80)) conv=notrunc
-
-printf '\xb0\xff\xff\xff' > /tmp/newC.bin
-dd if=/tmp/newC.bin of=client.patch bs=1 seek=$((0x1ad0)) conv=notrunc
-
-# Verify
-xxd -g 1 -s 0x1a57 -l 8 client.patch
-xxd -g 1 -s 0x1a80 -l 8 client.patch
-xxd -g 1 -s 0x1ad0 -l 8 client.patch
-
-# Run patched client
-chmod +x client.patch
-./client.patch challenges.unitedctf.ca 32776
-```
 
 ---
 *Généré avec l'aide de ChatGPT*
